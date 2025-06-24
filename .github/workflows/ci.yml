@@ -24,7 +24,7 @@ jobs:
       - name: Run tests
         run: npm run lint
 
-  build image:
+  build_image:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
