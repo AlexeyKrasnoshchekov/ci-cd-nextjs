@@ -8,7 +8,7 @@ on:
 
 env:
   # REGISTRY: hub.docker.com             # или docker.io для Docker Hub
-  IMAGE_NAME: ${{ github.repository }}  # owner/repo
+  IMAGE_NAME: "nextjsapp3"  # owner/repo
 
 jobs:
   # test:
@@ -41,7 +41,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v1
         with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          images: ${{ secrets.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
