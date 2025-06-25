@@ -52,7 +52,7 @@ jobs:
       - name: Docker Metadata action
         uses: docker/metadata-action@v5.0.0
         with:
-          images: ${{ vars.IMAGE_NAME }}
+          images: 'nextjsapp3'
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v6
