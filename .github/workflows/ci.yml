@@ -35,12 +35,16 @@ jobs:
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v3
 
+    # - name: Login to ghdr
+    #   run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
     - name: Login to Docker registry
       uses: docker/login-action@v3
       with:
         registry: ghcr.io
-        username: ${{ github.repository_owner }}
-        password: ${{ secrets.GITHUB_TOKEN }}
+        # username: ${{ github.repository_owner }}
+        username: ${{ github.actor }}
+        password: ${{ secrets.GH_TOKEN }}
 
     - name: Build and push
       uses: docker/build-push-action@v6
