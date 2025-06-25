@@ -7,7 +7,7 @@ on:
     branches: [ main ]
 
 env:
-  REGISTRY: docker.io             # или docker.io для Docker Hub
+  # REGISTRY: docker.io             # или docker.io для Docker Hub
   IMAGE_NAME: "nextjsapp3"  # owner/repo
   REGITRY_USER: "alexkkk21"  # owner/repo
 
@@ -25,7 +25,8 @@ jobs:
       - name: Run tests
         run: npm run lint
 
-  build_image:
+  build_image1:
+    needs: test
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -40,7 +41,7 @@ jobs:
       - name: Log in to Container registry
         uses: docker/login-action@v3
         with:
-          registry: ${{ env.REGISTRY }}
+          # registry: ${{ env.REGISTRY }}
           username: ${{ env.REGITRY_USER }}
           password: ${{ secrets.DOCKER_PASSWORD  }}
 
@@ -60,11 +61,15 @@ jobs:
       #       type=semver,pattern={{major}}
       #       type=sha
 
+  build_image2:
+    needs: build_image1
+    runs-on: ubuntu-latest
+    steps:
       - name: Build and push Docker image
         uses: docker/build-push-action@v6
         with:
           context: .
           file: ./Dockerfile
-          push: true
+          # push: true
           tags: ${{ env.REGITRY_USER }}/${{ env.IMAGE_NAME }}:latest
           labels: ${{ steps.meta.outputs.labels }}  
