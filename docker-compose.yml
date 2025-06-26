@@ -2,7 +2,7 @@
 
 services:
   mymulti:
-    image: alexkkk21/multi1:version1
+    image: alexkkk21/nextjsapp3
     ports:
       - "9999:8889"
     restart: always
