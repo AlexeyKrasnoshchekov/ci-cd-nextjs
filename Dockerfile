@@ -17,6 +17,6 @@ FROM nginx:1.21.0-alpine as production
 ENV NODE_ENV=production
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 COPY --from=builder /app/out /usr/share/nginx/html/
-EXPOSE 8889
+EXPOSE 9999
 # start nginx
 CMD ["nginx", "-g", "daemon off;"]
