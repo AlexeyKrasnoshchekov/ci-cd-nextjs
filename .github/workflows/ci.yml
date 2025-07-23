@@ -8,7 +8,7 @@ on:
 
 env:
   # REGISTRY: docker.io             # или docker.io для Docker Hub
-  IMAGE_NAME: "nextjsapp3"  # owner/repo
+  IMAGE_NAME: "nextjsapp5"  # owner/repo
   REGITRY_USER: "alexkkk21"  # owner/repo
 
 jobs:
@@ -52,7 +52,7 @@ jobs:
       - name: Docker Metadata action
         uses: docker/metadata-action@v5.0.0
         with:
-          images: 'nextjsapp4'
+          images: 'nextjsapp5'
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v6
@@ -61,8 +61,46 @@ jobs:
           file: ./Dockerfile
           # platforms: linux/amd64,linux/arm64,linux/arm/v6,linux/arm/v7
           push: true
-          tags: 'alexkkk21/nextjsapp4:latest'
+          tags: 'alexkkk21/nextjsapp5:latest'
           labels: ${{ steps.meta.outputs.labels }}  
+
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Проверить Docker на сервере через SSH
+        uses: appleboy/ssh-action@v0.1.9
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_PASS }}
+          script: |
+            echo "Проверка версии Docker:"
+            docker --version
+            echo "Путь до docker:"
+            which docker
+            if command -v docker > /dev/null 2>&1; then
+              docker pull alexkkk21/nextjsapp4
+              docker stop my_app || true
+              docker rm my_app || true
+              docker run -d -p 80:80 --name my_app alexkkk21/nextjsapp4
+            else
+              echo "Docker не найден"
+              exit 1
+            fi
+
+      # - name: Deploy container to server via SSH
+      #   uses: appleboy/ssh-action@v0.1.9
+      #   with:
+      #     host: ${{ secrets.SERVER_IP }}
+      #     username: ${{ secrets.SERVER_USER }}
+      #     key: ${{ secrets.SSH_PRIVATE_PASS }}
+      #     script: |
+            
+
+
 
   # build_image2:
   #   needs: build_image1
