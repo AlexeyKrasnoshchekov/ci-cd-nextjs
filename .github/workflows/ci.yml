@@ -65,6 +65,7 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}  
 
   deploy:
+    needs: build_image1
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -75,7 +76,7 @@ jobs:
         with:
           host: ${{ secrets.SERVER_IP }}
           username: ${{ secrets.SERVER_USER }}
-          key: ${{ secrets.SERVER_PASS }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             echo "Проверка версии Docker:"
             docker --version
@@ -85,7 +86,7 @@ jobs:
               docker pull alexkkk21/nextjsapp4
               docker stop my_app || true
               docker rm my_app || true
-              docker run -d -p 80:80 --name my_app alexkkk21/nextjsapp4
+              docker run -d -p 9999:80 --name my_app alexkkk21/nextjsapp4
             else
               echo "Docker не найден"
               exit 1
