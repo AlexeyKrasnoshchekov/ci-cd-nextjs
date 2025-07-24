@@ -73,8 +73,8 @@ jobs:
 
       - name: Проверить Docker на сервере через SSH
         uses: webfactory/ssh-agent@v0.7.0
-          with:
-            ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
       # - name: Run remote commands
       #   run: ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} 'docker ps'
