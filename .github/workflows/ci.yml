@@ -71,10 +71,20 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Проверить Docker на сервере через SSH и задеплоить образ
-        uses: webfactory/ssh-agent@v0.7.0
+      - name: install ssh keys
+          # check this thread to understand why its needed:
+          # <https://stackoverflow.com/a/70447517>
+          run: |
+            install -m 600 -D /dev/null ~/.ssh/id_rsa
+            echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+            ssh-keyscan -H ${{ secrets.SERVER_IP }} > ~/.ssh/known_hosts
+
+      - name: Deploy to server via SSH
+        uses: appleboy/ssh-action@v0.1.9
         with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             echo "Проверка версии Docker:"
             docker --version
@@ -89,6 +99,25 @@ jobs:
               echo "Docker не найден"
               exit 1
             fi
+
+      # - name: Проверить Docker на сервере через SSH и задеплоить образ
+      #   uses: webfactory/ssh-agent@v0.7.0
+      #   with:
+      #     ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+      #     script: |
+            # echo "Проверка версии Docker:"
+            # docker --version
+            # echo "Путь до docker:"
+            # which docker
+            # if command -v docker > /dev/null 2>&1; then
+            #   docker pull alexkkk21/nextjsapp4
+            #   docker stop my_app || true
+            #   docker rm my_app || true
+            #   docker run -d -p 9999:80 --name my_app alexkkk21/nextjsapp4
+            # else
+            #   echo "Docker не найден"
+            #   exit 1
+            # fi
 
       # - name: Run remote commands
       #   run: ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} 'docker ps'
