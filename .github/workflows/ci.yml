@@ -92,7 +92,7 @@ jobs:
               docker pull alexkkk21/nextjsapp4
               docker stop my_app || true
               docker rm my_app || true
-              docker run -d -p 9999:80 --name my_app alexkkk21/nextjsapp4
+              docker run -d -p 9999:8889 --name my_app alexkkk21/nextjsapp4
             else
               echo "Docker не найден"
               exit 1
