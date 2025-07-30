@@ -13,7 +13,7 @@
 # run the build command which will build and export html files
 # RUN npm run build
 # bundle static assets with nginx
-FROM nginx:1.21.0-alpine as production
+FROM nginx:1.21.0-alpine
 WORKDIR /app
 # ENV NODE_ENV=production
 COPY nginx.conf /etc/nginx/conf.d/default.conf
