@@ -17,7 +17,7 @@ FROM nginx:1.21.0-alpine as production
 WORKDIR /app
 # ENV NODE_ENV=production
 COPY nginx.conf /etc/nginx/conf.d/default.conf
-COPY /app/index.php /var/www/html/index.php
+COPY /app/index.php /usr/share/nginx/html/index.php
 # COPY --from=builder /app/out /usr/share/nginx/html/
 EXPOSE 8889
 # start nginx
