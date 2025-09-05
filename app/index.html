@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Пример переменной в HTML</title>
+</head>
+
+<body>
+    <h1 id="greeting"></h1>
+
+    <script>
+        // Объявляем переменную
+        const name = "Пользователь";
+
+        // Вставляем переменную в элемент с id="greeting"
+        document.getElementById("greeting").textContent = `Привет, ${name}!`;
+    </script>
+</body>
+
+</html>
