@@ -77,26 +77,46 @@ jobs:
       #       echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
       #       ssh-keyscan -H ${{ secrets.SERVER_IP }} > ~/.ssh/known_hosts
 
-      - name: Deploy to server via SSH
-        uses: appleboy/ssh-action@v0.1.9
-        with:
-          host: ${{ secrets.SERVER_IP }}
-          username: ${{ secrets.SERVER_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
-            echo "Проверка версии Docker:"
-            docker --version
-            echo "Путь до docker:"
-            which docker
-            if command -v docker > /dev/null 2>&1; then
-              docker pull alexkkk21/nextjsapp5
-              docker stop my_app || true
-              docker rm my_app || true
-              docker run -d -p 9999:8889 --name my_app alexkkk21/nextjsapp5
-            else
-              echo "Docker не найден"
-              exit 1
-            fi
+      # - name: Deploy to server via SSH
+      #   uses: appleboy/ssh-action@v0.1.9
+      #   with:
+      #     host: ${{ secrets.SERVER_IP }}
+      #     username: ${{ secrets.SERVER_USER }}
+      #     key: ${{ secrets.SSH_PRIVATE_KEY }}
+      #     script: |
+      #       echo "Проверка версии Docker:"
+      #       docker --version
+      #       echo "Путь до docker:"
+      #       which docker
+      #       if command -v docker > /dev/null 2>&1; then
+      #         docker pull alexkkk21/nextjsapp5
+      #         docker stop my_app || true
+      #         docker rm my_app || true
+      #         docker run -d -p 9999:8889 --name my_app alexkkk21/nextjsapp5
+      #       else
+      #         echo "Docker не найден"
+      #         exit 1
+      #       fi
+
+      deploy:
+        needs: build
+        runs-on: ubuntu-latest
+        steps:
+          - name: Checkout code
+            uses: actions/checkout@v4
+
+          - name: Set Kubernetes context
+            uses: azure/k8s-set-context@v4
+            with:
+              method: kubeconfig
+              kubeconfig: ${{ secrets.KUBE_CONFIG_DATA }}
+
+          - name: Deploy to Kubernetes
+            uses: azure/k8s-deploy@v5
+            with:
+              manifests: |
+                k8s/myapp-deploy5.yaml
+              images: alexkkk21/nextjsapp5
 
       # - name: Проверить Docker на сервере через SSH и задеплоить образ
       #   uses: webfactory/ssh-agent@v0.7.0
