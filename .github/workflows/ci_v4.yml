@@ -65,7 +65,7 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}  
 
   deploy:
-    needs: build
+    needs: build_image1
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
