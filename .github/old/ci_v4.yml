@@ -1,0 +1,155 @@
+name: CI for project
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+env:
+  # REGISTRY: docker.io             # или docker.io для Docker Hub
+  IMAGE_NAME: "nextjsapp5"  # owner/repo
+  REGITRY_USER: "alexkkk21"  # owner/repo
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          npm i
+
+      - name: Run tests
+        run: npm run lint
+
+  build_image1:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # - name: Set up Docker Buildx
+      #   uses: docker/setup-buildx-action@v3
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to Container registry
+        uses: docker/login-action@v3
+        with:
+          # registry: ${{ env.REGISTRY }}
+          username: ${{ env.REGITRY_USER }}
+          password: ${{ secrets.DC_TOKEN  }}
+
+       # Extract metadata (tags, labels) for Docker
+      - name: Docker Metadata action
+        uses: docker/metadata-action@v5.0.0
+        with:
+          images: 'nextjsapp5'
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./Dockerfile
+          # platforms: linux/amd64,linux/arm64,linux/arm/v6,linux/arm/v7
+          push: true
+          tags: 'alexkkk21/nextjsapp5:latest'
+          labels: ${{ steps.meta.outputs.labels }}  
+
+  deploy:
+    needs: build_image1
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      ### - name: install ssh keys 
+      #     script: |
+      #       install -m 600 -D /dev/null ~/.ssh/id_rsa
+      #       echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+      #       ssh-keyscan -H ${{ secrets.SERVER_IP }} > ~/.ssh/known_hosts
+
+      - name: Deploy to server via SSH
+        uses: appleboy/ssh-action@v0.1.9
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            echo "Проверка версии Docker:"
+            docker --version
+            echo "Путь до docker:"
+            which docker
+            if command -v docker > /dev/null 2>&1; then
+              docker pull alexkkk21/nextjsapp5
+              docker stop my_app || true
+              docker rm my_app || true
+              docker run -d -p 9999:8889 --name my_app alexkkk21/nextjsapp5
+            else
+              echo "Docker не найден"
+              exit 1
+            fi
+
+      # - name: Проверить Docker на сервере через SSH и задеплоить образ
+      #   uses: webfactory/ssh-agent@v0.7.0
+      #   with:
+      #     ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+      #     script: |
+            # echo "Проверка версии Docker:"
+            # docker --version
+            # echo "Путь до docker:"
+            # which docker
+            # if command -v docker > /dev/null 2>&1; then
+            #   docker pull alexkkk21/nextjsapp4
+            #   docker stop my_app || true
+            #   docker rm my_app || true
+            #   docker run -d -p 9999:80 --name my_app alexkkk21/nextjsapp4
+            # else
+            #   echo "Docker не найден"
+            #   exit 1
+            # fi
+
+      # - name: Run remote commands
+      #   run: ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} 'docker ps'
+          
+          
+      ###
+      # - name: Deploy container to server via SSH
+      #   uses: appleboy/ssh-action@v0.1.9
+      #   with:
+      #     host: ${{ secrets.SERVER_IP }}
+      #     username: ${{ secrets.SERVER_USER }}
+      #     key: ${{ secrets.SSH_PRIVATE_PASS }}
+      #     script: |
+            
+
+
+
+  # build_image2:
+  #   needs: build_image1
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v4
+
+  #     # - name: Set up QEMU
+  #     #   uses: docker/setup-qemu-action@v3
+
+
+
+  #     - name: Build and push Docker image
+  #       uses: docker/build-push-action@v6
+  #       with:
+  #         context: .
+  #         file: ./Dockerfile
+  #         push: true
+  #         tags: ${{ env.REGITRY_USER }}/${{ env.IMAGE_NAME }}:latest
+  #         labels: ${{ steps.meta.outputs.labels }}  
