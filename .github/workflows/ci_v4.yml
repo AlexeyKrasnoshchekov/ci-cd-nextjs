@@ -80,7 +80,7 @@ jobs:
       - name: Deploy to Kubernetes
         uses: azure/k8s-deploy@v5
         with:
-          manifests: |
+          manifests:
             k8s/myapp-deploy5.yaml
           images: alexkkk21/nextjsapp5
 
