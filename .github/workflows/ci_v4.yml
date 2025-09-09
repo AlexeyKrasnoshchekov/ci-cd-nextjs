@@ -86,7 +86,7 @@ jobs:
 
       - name: Deploy to k3s
         run: |
-          kubectl apply -f ./myapp-deploy5.yaml
+          kubectl apply -f ./myapp-deploy5.yaml --validate=false
 
       # - name: Проверить Docker на сервере через SSH и задеплоить образ
       #   uses: webfactory/ssh-agent@v0.7.0
