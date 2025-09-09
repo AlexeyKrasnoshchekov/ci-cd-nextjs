@@ -68,40 +68,25 @@ jobs:
     needs: build_image1
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      # - name: Checkout code
+      #   uses: actions/checkout@v4
 
-      - name: Deploy to server via SSH
-        uses: appleboy/ssh-action@v0.1.9
-        with:
-          host: ${{ secrets.SERVER_IP }}
-          username: ${{ secrets.SERVER_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
-            echo "Проверка версии k8s:"
-            kubectl version --client
-            kubectl apply -f ./myapp-deploy5.yaml
+      # - name: Set Kubernetes context
+      #   uses: azure/k8s-set-context@v4
+      #   with:
+      #     method: kubeconfig
+      #     kubeconfig: ${{ secrets.KUBE_CONFIG_DATA }}
 
+      - uses: actions/checkout@v4
+      - name: Setup kubectl
+        run: |
+          echo "${{ secrets.KUBE_CONFIG_DATA }}" | base64 -d > kubeconfig
+          export KUBECONFIG=$PWD/kubeconfig
+          kubectl version --client
 
-  # deploy:
-  #   needs: build_image1
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Checkout code
-  #       uses: actions/checkout@v4
-
-  #     - name: Set Kubernetes context
-  #       uses: azure/k8s-set-context@v4
-  #       with:
-  #         method: kubeconfig
-  #         kubeconfig: ${{ secrets.KUBE_CONFIG_DATA }}
-
-  #     - name: Deploy to Kubernetes
-  #       uses: azure/k8s-deploy@v5
-  #       with:
-  #         manifests:
-  #           k8s/myapp-deploy5.yaml
-  #         images: alexkkk21/nextjsapp5
+      - name: Deploy to k3s
+        run: |
+          kubectl apply -f ./myapp-deploy5.yaml
 
       # - name: Проверить Docker на сервере через SSH и задеплоить образ
       #   uses: webfactory/ssh-agent@v0.7.0
