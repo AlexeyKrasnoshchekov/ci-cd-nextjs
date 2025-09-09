@@ -71,18 +71,28 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set Kubernetes context
-        uses: azure/k8s-set-context@v4
-        with:
-          method: kubeconfig
-          kubeconfig: ${{ secrets.KUBE_CONFIG_DATA }}
+      - name: Set up kubectl
+        run: |
+          echo "${{ secrets.KUBE_CONFIG_DATA }}" | base64 -d > kubeconfig
+          export KUBECONFIG=$PWD/kubeconfig
+          kubectl version --client
 
-      - name: Deploy to Kubernetes
-        uses: azure/k8s-deploy@v5
-        with:
-          manifests:
-            k8s/myapp-deploy5.yaml
-          images: alexkkk21/nextjsapp5
+      # - name: Set Kubernetes context
+      #   uses: azure/k8s-set-context@v4
+      #   with:
+      #     method: kubeconfig
+      #     kubeconfig: ${{ secrets.KUBE_CONFIG_DATA }}
+
+      # - name: Deploy to Kubernetes
+      #   uses: azure/k8s-deploy@v5
+      #   with:
+      #     manifests:
+      #       k8s/myapp-deploy5.yaml
+      #     images: alexkkk21/nextjsapp5
+
+      - name: Apply manifests
+        run: |
+          kubectl apply -f k8s/myapp-deploy5.yaml
 
       # - name: Проверить Docker на сервере через SSH и задеплоить образ
       #   uses: webfactory/ssh-agent@v0.7.0
