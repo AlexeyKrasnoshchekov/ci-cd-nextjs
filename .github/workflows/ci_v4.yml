@@ -71,11 +71,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Set up kubectl
-        run: |
-          echo "$" | base64 -d > kubeconfig
-          export KUBECONFIG=$PWD/kubeconfig
-          kubectl version --client
+      - name: Set Kubernetes context
+        uses: azure/k8s-set-context@v4
+        with:
+          method: kubeconfig
+          kubeconfig: ${{ secrets.KUBE_CONFIG_DATA }}
 
       - name: Apply manifests
         run: |
@@ -89,11 +89,7 @@ jobs:
   #     - name: Checkout code
   #       uses: actions/checkout@v4
 
-  #     - name: Set Kubernetes context
-  #       uses: azure/k8s-set-context@v4
-  #       with:
-  #         method: kubeconfig
-  #         kubeconfig: ${{ secrets.KUBE_CONFIG_DATA }}
+      
 
   #     - name: Deploy to Kubernetes
   #       uses: azure/k8s-deploy@v5
