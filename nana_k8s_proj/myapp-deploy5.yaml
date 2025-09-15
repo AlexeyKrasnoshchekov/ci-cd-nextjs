@@ -48,4 +48,4 @@ spec:
     - protocol: TCP
       port: 8889
       targetPort: 8889
-      nodePort: 30005
+      nodePort: 30015
