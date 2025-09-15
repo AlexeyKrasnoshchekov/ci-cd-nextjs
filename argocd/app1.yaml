@@ -1,0 +1,17 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: guestbook
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/AlexeyKrasnoshchekov/ci-cd-nextjs.git
+    path: nana_k8s_proj
+    targetRevision: HEAD
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: my-namespace5
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
