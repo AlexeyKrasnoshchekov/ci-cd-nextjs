@@ -71,12 +71,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      ### - name: install ssh keys 
-      #     script: |
-      #       install -m 600 -D /dev/null ~/.ssh/id_rsa
-      #       echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-      #       ssh-keyscan -H ${{ secrets.SERVER_IP }} > ~/.ssh/known_hosts
-
       - name: Deploy to server via SSH
         uses: appleboy/ssh-action@v0.1.9
         with:
