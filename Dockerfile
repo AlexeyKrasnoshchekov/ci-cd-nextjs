@@ -19,6 +19,6 @@ WORKDIR /app
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 COPY /app/index.html /usr/share/nginx/html/index.html
 # COPY --from=builder /app/out /usr/share/nginx/html/
-EXPOSE 8889
+EXPOSE 30012
 # start nginx
 CMD ["nginx", "-g", "daemon off;"]

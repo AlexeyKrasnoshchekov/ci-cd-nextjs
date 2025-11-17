@@ -1,0 +1,105 @@
+---
+name: CI for project
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+jobs:
+  # call-workflow-adservice:
+  #   uses: ./.github/workflows/reusable.yml
+  #   with:
+  #     REGITRY_USER: alexkkk21
+  #     SERVICE_NAME: adservice
+  #   secrets:
+  #     DC_TOKEN: ${{ secrets.DC_TOKEN }}
+  # call-workflow-cartservice:
+  #   needs: call-workflow-adservice
+  #   uses: ./.github/workflows/reusable.yml
+  #   with:
+  #     REGITRY_USER: alexkkk21
+  #     SERVICE_NAME: cartservice
+  #   secrets:
+  #     DC_TOKEN: ${{ secrets.DC_TOKEN }}
+  # call-workflow-checkoutservice:
+  #   needs: call-workflow-adservice
+  #   uses: ./.github/workflows/reusable.yml
+  #   with:
+  #     REGITRY_USER: alexkkk21
+  #     SERVICE_NAME: checkoutservice
+  #   secrets:
+  #     DC_TOKEN: ${{ secrets.DC_TOKEN }}
+  # call-workflow-currencyservice:
+  #   needs: call-workflow-checkoutservice
+  #   uses: ./.github/workflows/reusable.yml
+  #   with:
+  #     REGITRY_USER: alexkkk21
+  #     SERVICE_NAME: currencyservice
+  #   secrets:
+  #     DC_TOKEN: ${{ secrets.DC_TOKEN }}
+  # call-workflow-emailservice:
+  #   needs: call-workflow-currencyservice
+  #   uses: ./.github/workflows/reusable.yml
+  #   with:
+  #     REGITRY_USER: alexkkk21
+  #     SERVICE_NAME: emailservice
+  #   secrets:
+  #     DC_TOKEN: ${{ secrets.DC_TOKEN }}
+  call-workflow-frontend:
+    # needs: call-workflow-emailservice
+    uses: ./.github/workflows/reusable.yml
+    with:
+      REGITRY_USER: alexkkk21
+      SERVICE_NAME: frontend
+    secrets:
+      DC_TOKEN: ${{ secrets.DC_TOKEN }}
+  # call-workflow-loadgenerator:
+  #   needs: call-workflow-frontend
+  #   uses: ./.github/workflows/reusable.yml
+  #   with:
+  #     REGITRY_USER: alexkkk21
+  #     SERVICE_NAME: loadgenerator
+  #   secrets:
+  #     DC_TOKEN: ${{ secrets.DC_TOKEN }}
+  # call-workflow-paymentservice:
+  #   needs: call-workflow-loadgenerator
+  #   uses: ./.github/workflows/reusable.yml
+  #   with:
+  #     REGITRY_USER: alexkkk21
+  #     SERVICE_NAME: paymentservice
+  #   secrets:
+  #     DC_TOKEN: ${{ secrets.DC_TOKEN }}
+  # call-workflow-productcatalogservice:
+  #   needs: call-workflow-paymentservice
+  #   uses: ./.github/workflows/reusable.yml
+  #   with:
+  #     REGITRY_USER: alexkkk21
+  #     SERVICE_NAME: productcatalogservice
+  #   secrets:
+  #     DC_TOKEN: ${{ secrets.DC_TOKEN }}
+  # call-workflow-recommendationservice:
+  #   needs: call-workflow-productcatalogservice
+  #   uses: ./.github/workflows/reusable.yml
+  #   with:
+  #     REGITRY_USER: alexkkk21
+  #     SERVICE_NAME: recommendationservice
+  #   secrets:
+  #     DC_TOKEN: ${{ secrets.DC_TOKEN }}
+  # call-workflow-shippingservice:
+  #   needs: call-workflow-recommendationservice
+  #   uses: ./.github/workflows/reusable.yml
+  #   with:
+  #     REGITRY_USER: alexkkk21
+  #     SERVICE_NAME: shippingservice
+  #   secrets:
+  #     DC_TOKEN: ${{ secrets.DC_TOKEN }}
+  # call-workflow-shoppingassistantservice:
+  #   needs: call-workflow-shippingservice
+  #   uses: ./.github/workflows/reusable.yml
+  #   with:
+  #     REGITRY_USER: alexkkk21
+  #     SERVICE_NAME: shoppingassistantservice
+  #   secrets:
+  #     DC_TOKEN: ${{ secrets.DC_TOKEN }}
