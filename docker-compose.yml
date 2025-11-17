@@ -1,10 +1,9 @@
 ---
-
 services:
   mymulti:
-    image: alexkkk21/nextjsapp3
+    image: myapp111
     ports:
-      - "9999:8889"
+      - "30016:8889"
     restart: always
 #     volumes:
 #       - ".:/app"
