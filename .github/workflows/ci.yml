@@ -60,7 +60,7 @@ jobs:
           file: ./Dockerfile
           # platforms: linux/amd64,linux/arm64,linux/arm/v6,linux/arm/v7
           push: true
-          tags: "alexkkk21/nextjsapp5:${{ env.COMMIT_SHA }}"
+          tags: "alexkkk21/nextjsapp5:green"
           labels: ${{ steps.meta.outputs.labels }}
 
   # deploy:
